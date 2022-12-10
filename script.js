@@ -1,6 +1,7 @@
 const Player = (sign) => {
   let playerSign = sign;
   let playerPoint = playerSign === 'X' ? 1 : -1;
+  let playerHandler = 'HUMAN';
 
   const getSign = () => {
     return playerSign;
@@ -10,7 +11,15 @@ const Player = (sign) => {
     return playerPoint;
   };
 
-  return { getSign, getPlayerPoint };
+  const setHandler = (handler) => {
+    playerHandler = handler;
+  };
+
+  const getHandler = () => {
+    return playerHandler;
+  };
+
+  return { getSign, getPlayerPoint, setHandler, getHandler };
 };
 
 const gameBoard = (() => {
@@ -39,12 +48,110 @@ const gameBoard = (() => {
   return { setSign, getSign, resetBoard, getBoard };
 })();
 
-// currentPlayer = player2;
-
 const displayController = (() => {
   const boardCells = document.querySelectorAll('#boardCell');
   const message = document.querySelector('#message');
-  const clearButton = document.querySelector('button');
+  const clearButton = document.querySelector('#clear');
+  const aiButton1 = document.querySelector('#aiButton1');
+  const aiButton2 = document.querySelector('#aiButton2');
+  const easyButton1 = document.querySelector('#easyButton1');
+  const easyButton2 = document.querySelector('#easyButton2');
+  const humanButton1 = document.querySelector('#humanButton1');
+  const humanButton2 = document.querySelector('#humanButton2');
+  const startButton = document.querySelector('#startButton');
+  const menu = document.querySelector('#menu');
+  const game = document.querySelector('#game');
+  const header = document.querySelector('#header');
+
+  header.addEventListener('click', () => {
+    window.location.reload();
+  });
+
+  aiButton1.addEventListener('click', () => {
+    humanButton1.classList.remove('selected');
+    easyButton1.classList.remove('selected');
+    aiButton1.classList.add('selected');
+    gameController.getPlayerX().setHandler('GOD');
+  });
+
+  easyButton1.addEventListener('click', () => {
+    humanButton1.classList.remove('selected');
+    aiButton1.classList.remove('selected');
+    easyButton1.classList.add('selected');
+    gameController.getPlayerX().setHandler('EASY');
+  });
+
+  humanButton1.addEventListener('click', () => {
+    aiButton1.classList.remove('selected');
+    easyButton1.classList.remove('selected');
+    humanButton1.classList.add('selected');
+    gameController.getPlayerX().setHandler('HUMAN');
+  });
+
+  aiButton2.addEventListener('click', () => {
+    humanButton2.classList.remove('selected');
+    easyButton2.classList.remove('selected');
+    aiButton2.classList.add('selected');
+    gameController.getPlayerY().setHandler('GOD');
+  });
+
+  easyButton2.addEventListener('click', () => {
+    humanButton2.classList.remove('selected');
+    aiButton2.classList.remove('selected');
+    easyButton2.classList.add('selected');
+    gameController.getPlayerY().setHandler('EASY');
+  });
+
+  humanButton2.addEventListener('click', () => {
+    aiButton2.classList.remove('selected');
+    easyButton2.classList.remove('selected');
+    humanButton2.classList.add('selected');
+    gameController.getPlayerY().setHandler('HUMAN');
+  });
+
+  const startRoutine = () => {
+    if (
+      !(gameController.getCurrentPlayer().getHandler() === 'HUMAN') &&
+      !(
+        gameController
+          .getOppositePlayer(gameController.getCurrentPlayer())
+          .getHandler() === 'HUMAN'
+      )
+    ) {
+      (myLoop = (i) => {
+        setTimeout(() => {
+          const index =
+            gameController.getCurrentPlayer().getHandler() === 'GOD'
+              ? gameController.minimax(
+                  gameBoard.getBoard(),
+                  gameController.getCurrentPlayer(),
+                  true
+                ).index
+              : gameController.getRandom(gameBoard.getBoard());
+          if (gameBoard.getSign(index) === index) {
+            gameController.play(index);
+          }
+          if (--i) myLoop(i);
+        }, 1000);
+      })(9);
+    } else if (!(gameController.getCurrentPlayer().getHandler() === 'HUMAN')) {
+      if (!gameController.getIsWin()) {
+        setTimeout(
+          (i) => {
+            gameController.play(i);
+          },
+          1000,
+          gameController.getRandom(gameBoard.getBoard())
+        );
+      }
+    }
+  };
+
+  startButton.addEventListener('click', () => {
+    menu.classList.add('inactive');
+    game.classList.add('active');
+    startRoutine();
+  });
 
   const updateBoard = () => {
     for (let i = 0; i < boardCells.length; i++) {
@@ -69,25 +176,66 @@ const displayController = (() => {
     let cell = boardCells[i];
     cell.addEventListener('click', (e) => {
       const index = parseInt(e.target.getAttribute('index'));
-      if (gameBoard.getSign(index) === index && !gameController.getIsWin()) {
+      if (
+        gameController.getCurrentPlayer().getHandler() === 'HUMAN' &&
+        gameBoard.getSign(index) === index &&
+        !gameController.getIsWin()
+      ) {
         gameController.play(index);
+        if (
+          !(gameController.getCurrentPlayer().getHandler() === 'HUMAN') &&
+          !gameController.getIsWin()
+        ) {
+          const index =
+            gameController.getCurrentPlayer().getHandler() === 'GOD'
+              ? gameController.minimax(
+                  gameBoard.getBoard(),
+                  gameController.getCurrentPlayer(),
+                  true
+                ).index
+              : gameController.getRandom(gameBoard.getBoard());
+          if (gameBoard.getSign(index) === index) {
+            setTimeout(
+              (i) => {
+                gameController.play(i);
+              },
+              1000,
+              index
+            );
+          }
+        }
       }
     });
   }
 
   clearButton.addEventListener('click', () => {
     gameController.resetGameController();
+    startRoutine();
   });
 
   return { updateBoard, updateMessage, lightUp, lightDown };
 })();
 
 const gameController = (() => {
-  const player1 = Player('X');
-  const player2 = Player('O');
+  const playerX = Player('X');
+  const playerY = Player('O');
+  playerX.setHandler('HUMAN');
+  playerY.setHandler('EASY');
   let turn = 1;
-  let currentPlayer = player1;
+  let currentPlayer = playerX;
   displayController.updateMessage('Player ' + currentPlayer.getSign());
+
+  const getTurn = () => {
+    return turn;
+  };
+
+  const getPlayerX = () => {
+    return playerX;
+  };
+
+  const getPlayerY = () => {
+    return playerY;
+  };
 
   let isWin = false;
 
@@ -105,36 +253,15 @@ const gameController = (() => {
       return;
     }
 
-    if (currentPlayer === player1) currentPlayer = player2;
-    else currentPlayer = player1;
+    if (currentPlayer === playerX) currentPlayer = playerY;
+    else currentPlayer = playerX;
     displayController.updateMessage('Player ' + currentPlayer.getSign());
 
-    if (turn === 10) {
+    if (turn >= 10) {
       displayController.updateMessage('Draw');
     }
   };
 
-  // const updateScore = (index) => {
-  //   const row = index < 3 ? 0 : index < 6 ? 1 : 2;
-  //   const col = index % 3;
-  //   rowScore[row] += currentPlayer.getPlayerPoint();
-  //   columnScore[col] += currentPlayer.getPlayerPoint();
-  //   if (row === col) {
-  //     majorDiagonalScore += currentPlayer.getPlayerPoint();
-  //   }
-  //   if (row + col === 2) {
-  //     minorDiagonalScore += currentPlayer.getPlayerPoint();
-  //   }
-
-  //   if (
-  //     Math.abs(rowScore[row]) === 3 ||
-  //     Math.abs(columnScore[col]) === 3 ||
-  //     Math.abs(majorDiagonalScore) === 3 ||
-  //     Math.abs(minorDiagonalScore) === 3
-  //   ) {
-  //     isWin = true;
-  //   }
-  // };
   const getIsWin = () => {
     return isWin;
   };
@@ -144,7 +271,7 @@ const gameController = (() => {
     displayController.updateBoard();
     turn = 1;
     isWin = false;
-    currentPlayer = player1;
+    currentPlayer = playerX;
     displayController.updateMessage('Player ' + currentPlayer.getSign());
     displayController.lightDown();
   };
@@ -175,7 +302,10 @@ const gameController = (() => {
     return false;
   };
 
-  // var availableSpots = getEmptyIndices(gameBoard.getBoard());
+  const getRandom = (gameBoard) => {
+    var availableSpots = getEmptyIndices(gameBoard);
+    return availableSpots[Math.floor(Math.random() * availableSpots.length)];
+  };
 
   const minimax = (inputBoard, player, maxPlayer) => {
     // debugger;
@@ -232,8 +362,8 @@ const gameController = (() => {
   };
 
   const getOppositePlayer = (player) => {
-    if (player === player1) return player2;
-    return player1;
+    if (player === playerX) return playerY;
+    return playerX;
   };
 
   const getCurrentPlayer = () => {
@@ -248,5 +378,9 @@ const gameController = (() => {
     getOppositePlayer,
     minimax,
     getCurrentPlayer,
+    getTurn,
+    getPlayerX,
+    getPlayerY,
+    getRandom,
   };
 })();

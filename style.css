@@ -30,29 +30,61 @@
 html {
   position: relative;
   min-height: 100%;
+  overflow: hidden;
 }
 
 body {
   background-color: var(--floral-white);
   color: var(--eerir-black);
-  font-family: 'Bungee Shade', cursive;
+  font-family: 'Bungee', cursive;
   font-size: 25px;
-  font-weight: 500;
+  /* font-weight: 500; */
   word-wrap: break-word;
   user-select: none;
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
+  overflow: hidden;
 }
 
 button,
 input {
-  border: none;
-  background-color: var(--dark-beige);
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
+  height: 60px;
+  width: 175px;
+  background-color: inherit;
+  border-radius: 30px;
+  border: 10px solid var(--black-olive);
   cursor: pointer;
-  outline: none;
+  font-family: inherit;
+  color: inherit;
+  font-size: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-button {
+  width: 352px;
+  height: 80px;
+  border: none;
+  background-color: var(--flame);
+  box-shadow: var(--shadow);
+  color: var(--eerir-black);
+  font-size: 60px;
+  /* font-family: 'Bungee Shade', cursive; */
+}
+
+.menu-board {
+  font-family: 'Bungee Spice', cursive;
+  font-size: 70px;
+  height: 50px;
+  margin: 25px auto;
+  /* border: 2px solid black; */
+  grid-gap: 2%;
+  border-radius: 30px;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
 }
 
 input {
@@ -97,6 +129,14 @@ input[type='number'] {
   max-width: var(--container-width);
   padding: var(--spacing-lg);
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* padding-bottom: 0px; */
+}
+
+.clear {
 }
 
 .header {
@@ -105,11 +145,7 @@ input[type='number'] {
   color: var(--eerir-black);
   font-family: 'Bungee Shade', cursive;
   font-size: 40px;
-}
-
-.header .container {
-  text-align: center;
-  padding: 0;
+  display: flex;
 }
 
 .main {
@@ -117,30 +153,101 @@ input[type='number'] {
   text-align: center;
 }
 
+.game {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0%, -45%) scale(1.2);
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+}
+
+.game.active {
+  opacity: 1;
+  transform: translate(0%, -45%) scale(1);
+  pointer-events: auto;
+}
+
+.menu.inactive {
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(0%, 0%) scale(1.2);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.menu-button {
+  font-size: 25px;
+  font-family: 'Bungee', cursive;
+}
+
+.menu-button.selected {
+  font-size: 26px;
+  font-family: 'Bungee Spice', cursive;
+}
+
 .message {
-  font-family: 'Bungee Shade', cursive;
+  /* font-family: 'Bungee Shade', cursive; */
   color: var(--black-olive);
   font-size: 40px;
-  padding-top: 50px;
-  height: 152px;
-  display: flex;
+  /* padding-top: 50px; */
+  /* height: 152px; */
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 }
 
 .message.active {
-  font-family: 'Bungee Spice', cursive;
+  /* font-family: 'Bungee Spice', cursive; */
+  color: var(--flame);
 }
 
 /* MEDIA QUERIES */
 
 @media (max-width: 500px) {
   .header .container {
-    flex-direction: column;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     font-size: 21px;
+  }
+
+  .container {
+    flex-direction: row;
+    padding: 0 var(--spacing-lg);
+  }
+
+  button,
+  input {
+    height: 50px;
+    width: 150px;
+    background-color: inherit;
+    border-radius: 30px;
+    border: 7px solid var(--black-olive);
+  }
+
+  .game {
+    transform: translate(0%, -90%) scale(1.2);
+  }
+
+  .game.active {
+    opacity: 1;
+    transform: translate(0%, -85%) scale(1);
+    pointer-events: auto;
+  }
+
+  .start-button {
+    width: 352px;
+    height: 70px;
+    border: none;
+    background-color: var(--flame);
+    box-shadow: var(--shadow);
+    color: var(--eerir-black);
+    font-size: 40px;
+    /* font-family: 'Bungee Shade', cursive; */
+  }
+
+  .menu-board {
+    height: 300px;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
 
   .main {
@@ -149,7 +256,8 @@ input[type='number'] {
 
   .message {
     font-size: 30px;
-    height: 126px;
+    height: 50px;
+    line-height: 50px;
   }
 
   .game-board {
@@ -162,6 +270,14 @@ input[type='number'] {
     height: 100.8px;
     width: 100%;
     font-size: 70px;
+  }
+
+  .menu-button {
+    font-size: 22px;
+  }
+
+  .menu-button.selected {
+    font-size: 23px;
   }
 
   .board-cell:hover {

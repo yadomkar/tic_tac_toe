@@ -9,34 +9,58 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Bungee+Spice&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&family=Bungee+Shade&family=Bungee+Spice&display=swap"
       rel="stylesheet"
     />
     <title>Tic Tac Toe</title>
   </head>
   <body>
-    <header class="header">
+    <header class="header" id="header">
       <div class="container">
         <h1>Tic Tac Toe</h1>
       </div>
     </header>
     <main class="main">
-      <div class="message" id="message"></div>
-      <div class="container">
-        <div class="game-board" id="gameBoard">
-          <div class="board-cell" id="boardCell" index="0"></div>
-          <div class="board-cell" id="boardCell" index="1"></div>
-          <div class="board-cell" id="boardCell" index="2"></div>
-          <div class="board-cell" id="boardCell" index="3"></div>
-          <div class="board-cell" id="boardCell" index="4"></div>
-          <div class="board-cell" id="boardCell" index="5"></div>
-          <div class="board-cell" id="boardCell" index="6"></div>
-          <div class="board-cell" id="boardCell" index="7"></div>
-          <div class="board-cell" id="boardCell" index="8"></div>
+      <div class="menu" id="menu">
+        <div class="container">
+          <div class="menu-board">
+            X
+            <button class="menu-button" id="aiButton1">God</button>
+            <button class="menu-button" id="easyButton1">Easy</button>
+            <button class="menu-button selected" id="humanButton1">
+              Player 1
+            </button>
+          </div>
+          <div class="menu-board">
+            O
+            <button class="menu-button" id="aiButton2">God</button>
+            <button class="menu-button selected" id="easyButton2">Easy</button>
+            <button class="menu-button" id="humanButton2">Player 2</button>
+          </div>
+        </div>
+        <div class="container">
+          <button class="start-button" id="startButton">START</button>
         </div>
       </div>
-      <div class="container">
-        <button>CLEAR</button>
+      <div class="game" id="game">
+        <div class="container"><div class="message" id="message"></div></div>
+
+        <div class="container">
+          <div class="game-board" id="gameBoard">
+            <div class="board-cell" id="boardCell" index="0"></div>
+            <div class="board-cell" id="boardCell" index="1"></div>
+            <div class="board-cell" id="boardCell" index="2"></div>
+            <div class="board-cell" id="boardCell" index="3"></div>
+            <div class="board-cell" id="boardCell" index="4"></div>
+            <div class="board-cell" id="boardCell" index="5"></div>
+            <div class="board-cell" id="boardCell" index="6"></div>
+            <div class="board-cell" id="boardCell" index="7"></div>
+            <div class="board-cell" id="boardCell" index="8"></div>
+          </div>
+        </div>
+        <div class="container">
+          <button class="clear" id="clear">CLEAR</button>
+        </div>
       </div>
     </main>
     <footer></footer>
