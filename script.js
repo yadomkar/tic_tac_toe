@@ -128,7 +128,10 @@ const displayController = (() => {
                   true
                 ).index
               : gameController.getRandom(gameBoard.getBoard());
-          if (gameBoard.getSign(index) === index) {
+          if (
+            !gameController.getIsWin() &&
+            gameBoard.getSign(index) === index
+          ) {
             gameController.play(index);
           }
           if (--i) myLoop(i);
